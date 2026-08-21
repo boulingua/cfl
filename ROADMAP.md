@@ -1,7 +1,7 @@
 # CFL — Chinese course roadmap
 
 > Repository: `cfl` · Language: Standard Mandarin Chinese · Signature accent `#2334C7` (light) / `#7E89E7` (dark) · Pentagon mark · Status: **coming soon → building**.
-> This roadmap turns the empty `cfl` scaffold (LICENSE + README + brand icons) into a complete boulingua course — content *and* site — conforming to `pagegen`, the `curriculum` framework, and the VG Wort standard.
+> This roadmap turns the empty `cfl` scaffold (LICENSE + README + brand icons) into a complete boulingua course — content *and* site — conforming to the `kit` platform, the `curriculum` framework, and the VG Wort standard.
 
 ## 1. Overview
 
@@ -26,29 +26,30 @@ Concrete, opinionated recommendations — one per axis:
 - **Standard variety → Standard Mandarin (Putonghua).** Beijing-based pronunciation, neutral register. No regional topolects (Cantonese/Min etc.) in scope.
 - **Romanisation → Hanyu Pinyin with diacritic tone marks** (mā/má/mǎ/mà), never tone numbers in running prose. Numbered Pinyin (ma1) allowed only in machine-facing keys/filenames. Neutral tone unmarked. Every new Hanzi item is introduced as a `汉字 (pīnyīn) — Gloss` triple.
 - **Directionality → LTR.** Modern horizontal Simplified Chinese is left-to-right; **no RTL work**, no vertical typesetting. This is a genuine simplification vs a hypothetical Arabic/Hebrew course — note it and move on.
-- **Web font → bundle Noto Sans SC (subset), self-hosted.** *Recommended.* SIL OFL (redistribution-safe under the repo's licensing), broad Simplified coverage, clean tone-mark rendering. Add via `assets/css/custom.css` `@font-face` with `font-display: swap`; **subset to the actually-used character set** at build time (units drive coverage) to keep payload sane. Do **not** pull from a CDN — keep the site self-contained and GitHub-Pages-static. The accent/pentagon system in `data/accents.yaml` is untouched (already carries `cfl`).
-- **Native-voice TTS → Piper `zh_CN-chaowen-medium` (CC0).** *Available, and the licence position decides it.* `zh_CN-huayan-medium`, recommended in an earlier draft of this document, states `License: Unknown` on its model card and cannot ship — an unstated licence is not permission, and audio synthesised from a model inherits its training data's terms, so it cannot sit inside a CC BY-SA 4.0 course. `zh_CN-xiao_ya-medium` is explicitly **non-commercial** and is excluded for the same reason. `chaowen` is CC0 and carries no obligation. `scripts/build_audio.py` already takes `<voice.onnx> <lang>`; invoke it with the `zh` language argument. `chaowen` is also the **only** licence-clear Mandarin speaker in the catalogue, so single-voice dialogues with speaker labels are the plan, not a stopgap — add a second voice only if a second licence-clear `zh_CN` voice lands. Verify tone rendering by ear on a sample before batch-generating. Audio is generated **locally and committed** (CI never runs Piper).
-- **Voice IDs are never hand-typed.** The ID, tier and licence above are read from `audiogen/voices.yml` (relocating to `kit/audio/voices.yml` at F1), which is the single source of truth and keeps the rejected `huayan`/`xiao_ya` rows with their licences so the decision stays auditable. A voice ID retyped from memory is how a 404 gets written into a download script.
+- **Web font → bundle Noto Sans SC (subset), self-hosted.** *Recommended.* SIL OFL (redistribution-safe under the repo's licensing), broad Simplified coverage, clean tone-mark rendering. Added to the kit's `fonts.yaml` manifest, which `build_fonts.py` (F3) subsets and emits the `@font-face` and `font-display: swap` declarations for; **the subset is driven by the actually-used character set** (units drive coverage) to keep the payload sane. Not a course-side file — a course repo has no `assets/css/` and no `static/fonts/`. Do **not** pull from a CDN — keep the site self-contained and GitHub-Pages-static. The accent/pentagon system in `data/accents.yaml` is untouched (already carries `cfl`).
+- **Native-voice TTS → Piper `zh_CN-chaowen-medium` (CC0).** *Available, and the licence position decides it.* `zh_CN-huayan-medium`, recommended in an earlier draft of this document, states `License: Unknown` on its model card and cannot ship — an unstated licence is not permission, and audio synthesised from a model inherits its training data's terms, so it cannot sit inside a CC BY-SA 4.0 course. `zh_CN-xiao_ya-medium` is explicitly **non-commercial** and is excluded for the same reason. `chaowen` is CC0 and carries no obligation. the kit's `audio/build_audio.py` already takes `<voice.onnx> <lang>`; invoke it with the `zh` language argument. `chaowen` is also the **only** licence-clear Mandarin speaker in the catalogue, so single-voice dialogues with speaker labels are the plan, not a stopgap — add a second voice only if a second licence-clear `zh_CN` voice lands. Verify tone rendering by ear on a sample before batch-generating. Audio is generated **locally and committed** (CI never runs Piper).
+- **Voice IDs are never hand-typed.** The ID, tier and licence above are read from `kit/audio/voices.yml`, which is the single source of truth and must never be hand-copied into prose and keeps the rejected `huayan`/`xiao_ya` rows with their licences so the decision stays auditable. A voice ID retyped from memory is how a 404 gets written into a download script.
 - **Level-0 script onboarding → YES, mandatory.** A dedicated **Pre-A1 "起步 / Erste Schritte"** stage (Pinyin system, the four tones + neutral, tone sandhi basics, pronunciation, stroke logic *conceptually*, radicals as reading aids, ~150 highest-frequency characters). **Stroke-order animations/practice are out of scope for v1** (documented as a known gap; a static stroke-order appendix is the fallback).
 
-## 3. Instantiation from pagegen
+## 3. Standing up the site on the kit
 
-Stand up the buildable site first (before authoring content):
+Stand up the buildable site first (before authoring content). Nothing shared is copied — `cfl` imports it.
 
-1. **Copy the template.** Seed `cfl` working tree from `pagegen` (layouts, archetypes, scripts, `data/`, `brand/`, `.github/workflows/build-deploy.yml`, `go.mod`, i18n) — preserving the existing `cfl` LICENSE, README, and `brand/` history. Never track `public/`.
-2. **Edit `hugo.toml` marked values only:**
+1. **Create the repo around the kit.** `cfl` holds a short `hugo.toml` (baseURL, title, languageCode, `[params]`, menus) whose `[module]` block carries `[[module.imports]] path = "github.com/boulingua/kit"`, a `go.mod`/`go.sum` requiring `github.com/boulingua/kit` at the pinned tag (`v1.0.0`), `boulingua.yml` (the per-course config the gate battery reads), the twelve-line `.github/workflows/deploy.yml` calling the org's reusable workflow, an empty `content/` skeleton and the legal pages — preserving the existing `cfl` LICENSE, README, and `brand/` history. `layouts/`, `assets/`, `archetypes/`, `i18n/` and `scripts/` are **not** copied and must never appear here: they are the drift surface, and a file that is not in the repo cannot fork. Hugo pulls the first four from the module; CI checks the kit out at the pinned tag so `scripts/` and the gate battery sit on disk before Hugo runs. Never track `public/`.
+2. **Vendor `_materials/`.** Run `kit materials sync` — it assembles the kit's `latex/`, `fonts/` and `brand/icons/` into the flat `_materials/` tree the LaTeX build expects — and commit it. This is the only vendored surface, because XeLaTeX cannot read a Hugo module; it is hash-gated against `kit.lock`, so an edited file fails the build instead of forking quietly. (Earlier drafts told you to copy `_materials/` from the template; `pagegen` never had one.)
+3. **Edit `hugo.toml` marked values only:**
    - `baseURL = "https://boulingua.github.io/cfl/"`
    - `title = "Chinese — S. Le Boulanger"`
    - `languageCode = "de"`, `defaultContentLanguage = "de"` (instruction language is German)
    - `[params].navTitle = "Chinese 中文"`, `description`, `keywords = "Chinese,Mandarin,Hanzi,Pinyin,HSK,CEFR,OER,Gesamtschule"`
-   - `params.code = "cfl"` (selects the `#2334C7` accent)
+   - `params.code = "cfl"` (selects the `#2334C7` accent from the kit's `data/accents.yaml`). Setting it is not optional: the kit's default is the neutral graphite `template` accent, so a course that forgets looks obviously unconfigured rather than looking like DaF.
    - `[params.plausible].domain = "boulingua.github.io/cfl"` (keep this block **last** — the TOML sub-table trap)
    - `[[params.social]].url` → the `cfl` GitHub repo
    - `[[menu.main]]` sections → mirror `content/`: Level 0 (Script), A1, A2, B1; Materials (Slide decks / Worksheets); About; Legal.
-3. **Regenerate the pentagon.** Run `python brand/make_icon.py` so `icon.svg`/`icon.png`/favicons derive from `cfl`'s accent. Confirm the icon reads clean at 64px next to CJK.
-4. **Confirm `data/accents.yaml` carries `cfl`** — it already does (`code: cfl`, `accent: "#2334C7"`, `hover: "#1C2AA0"`). No CSS edits.
-5. **First green build.** `hugo --minify --gc` locally, then push to `main` → the `build-deploy.yml` gate battery runs and GitHub Pages publishes. Keep the world-map tile on *coming-soon* until §8's done-criteria are met.
-6. **Fill the three legal pages** (`impressum` / `datenschutz` / `haftungsausschluss`) ⟨…⟩ placeholders, and add the VG Wort METIS disclosure to `datenschutz`. Remove `|| true` from the legal-placeholder gate once filled.
+4. **Regenerate the pentagon.** Run the kit's `brand/make_icon.py` so this repo's `icon.svg`/`icon.png`/favicons derive from `cfl`'s accent. Confirm the icon reads clean at 64px next to CJK.
+5. **Confirm the kit's `data/accents.yaml` carries `cfl`** — it already does (`code: cfl`, `accent: "#2334C7"`, `hover: "#1C2AA0"`). The file arrives with the module; no CSS edits, and no `data/accents.yaml` in this repo.
+6. **First green build.** `hugo --minify --gc --panicOnWarning` locally, then push to `main` → `deploy.yml` builds under the same flags, runs the gate battery and GitHub Pages publishes. Keep the world-map tile on *coming-soon* until §8's done-criteria are met.
+7. **Fill the three legal pages** (`impressum` / `datenschutz` / `haftungsausschluss`) ⟨…⟩ placeholders, and add the VG Wort METIS disclosure to `datenschutz`. Remove `|| true` from the legal-placeholder gate once filled.
 
 ## 4. Curriculum conformance target
 
@@ -76,14 +77,14 @@ Per-phase acceptance criteria (all must hold): green `hugo` build; the §4 confo
 ## 6. Website & materials
 
 - **Section landings via shortcodes** (never raw HTML) for Level 0/A1/A2/B1 and the Materials hub, mirroring `content/materials/_index.md`.
-- **Materials pipeline.** Generate branded decks (`.odp` via slidegen) and printable **PDF** worksheets (sheetgen) from the LaTeX templates via `scripts/build_materials_latex.py`; **commit** under `static/materials` + `static/downloads/<level>/`. CI only *verifies* presence + attribution (`verify_downloads.py`) — no TeX Live in the deploy path. LaTeX must use a CJK-capable engine/font (XeLaTeX/LuaLaTeX + Noto Sans SC) so Hanzi and tone marks render.
-- **Native-voice audio.** `scripts/build_audio.py … <chaowen .onnx> zh 'content/**/units/*/index.md'` → OGG/Opus, committed; the `.onnx` path comes from `audiogen/voices.yml`'s `cfl` row (→ `kit/audio/voices.yml` at F1), never typed in by hand. Voice only teaching units (skip exams). **Decision: Mandarin audio ships on `zh_CN-chaowen-medium` (CC0)** — the licence-clear voice, not the one an earlier draft named (§2). Single-voice with typographic speaker labels is the shipping form; dialogue alternation is added only if a second **licence-clear** `zh_CN` voice lands.
+- **Materials pipeline.** Generate branded decks (`.odp`) and printable **PDF** worksheets from the kit's LaTeX templates (`kit/latex/`, vendored into `_materials/`) via `scripts/build_materials_latex.py`; **commit** under `static/materials` + `static/downloads/<level>/`. CI only *verifies* presence + attribution (`verify_downloads.py`) — no TeX Live in the deploy path. LaTeX must use a CJK-capable engine/font (XeLaTeX/LuaLaTeX + Noto Sans SC) so Hanzi and tone marks render.
+- **Native-voice audio.** `build_audio.py … <chaowen .onnx> zh 'content/**/units/*/index.md'` → OGG/Opus, committed; the `.onnx` path comes from the `cfl` row in `kit/audio/voices.yml`, never typed in by hand. Voice only teaching units (skip exams). **Decision: Mandarin audio ships on `zh_CN-chaowen-medium` (CC0)** — the licence-clear voice, not the one an earlier draft named (§2). Single-voice with typographic speaker labels is the shipping form; dialogue alternation is added only if a second **licence-clear** `zh_CN` voice lands.
 - **Thumbnails** via `scripts/render_thumbs.py`; declared in unit front-matter `presentation`/`worksheet` `{ file, thumbnail }`.
 - **Downloads** surfaced per unit and aggregated on the Materials hub.
 
 ## 7. VG Wort — pixel assignment for ALL content pages (required, non-skippable)
 
-Every content page that is an original creative text **≥1800 rendered characters** gets exactly **one** VG Wort Zählmarke, per `pagegen/docs/vgwort-standard.md`:
+Every content page that is an original creative text **≥1800 rendered characters** gets exactly **one** VG Wort Zählmarke, per `kit/docs/vgwort-standard.md`:
 
 - **Draw fresh public codes** (32-hex Öffentlicher Identifikationscode) from the author's **T.O.M.** account — one per work, never invented, never reused across pages. Private codes never appear in the repo.
 - **Register** each in `data/vgwort.yaml` keyed by `url:` (base-stripped `RelPermalink`) or `path:`, with `public_id` / `pixel_url` / `token`, `min_chars: 1800`, `author`, `registered_at`.
@@ -96,7 +97,7 @@ Every content page that is an original creative text **≥1800 rendered characte
 
 ## 8. Milestones & sequencing
 
-1. **M0 — Scaffold live (site, no content).** §3 complete: `cfl` builds green from `pagegen`, pentagon regenerated, CJK font bundled, legal pages filled, Pages deploying. *Dependency: none.* **~1 week.**
+1. **M0 — Scaffold live (site, no content).** §3 complete: `cfl` builds green on the kit module with `_materials/` vendored, pentagon regenerated, CJK font bundled, legal pages filled, Pages deploying. *Dependency: none.* **~1 week.**
 2. **M1 — MVP: Script onboarding + first A1 unit live.** Phase 0 unit(s) + one full A1 unit with committed deck/worksheet/audio/thumbnail, first Zählmarken registered, conformance + VG Wort gates green. **This is the earliest publishable slice.** *Depends on M0, Piper voice, font subset.* **~3–4 weeks.**
 3. **M2 — A1 complete** (12 units + exams + core appendices, full A1 descriptor coverage). **~2–3 months.**
 4. **M3 — A2 complete.** **~2–3 months.**
