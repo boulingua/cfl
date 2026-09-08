@@ -1,0 +1,175 @@
+# ─────────────────────────────────────────────────────────────────────────
+# cfl — Chinesisch als Fremdsprache (boulingua). Instantiated from pagegen,
+# the canonical boulingua course template (Hugo + hugo-coder).
+#
+# Only the per-course values are changed here; everything else is the shared
+# standard and is kept byte-identical to pagegen so the courses stay alignable.
+# Language decisions follow ROADMAP.md §2/§3: Standard Mandarin, Simplified
+# characters + Hanyu Pinyin with diacritic tone marks, German metalanguage.
+# ─────────────────────────────────────────────────────────────────────────
+
+baseURL = "https://boulingua.github.io/cfl/"
+title = "Chinese — S. Le Boulanger"
+languageCode = "de"                # metalanguage of instruction is German
+defaultContentLanguage = "de"
+enableEmoji = false
+enableRobotsTXT = true
+
+[pagination]
+  pagerSize = 20
+
+[markup.highlight]
+  noClasses = false
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.tableOfContents]
+  startLevel = 2
+  endLevel = 3
+  ordered = false
+
+# Tags are DECLARED, not implicit — derive them from structured fields.
+[taxonomies]
+  tag = "tags"
+  skill = "skills"
+  level = "levels"
+  topic = "topics"
+
+[params]
+  navTitle = "Chinese 中文"
+  author = "S. Le Boulanger"
+  description = "Chinesisch als Fremdsprache — ein offener Kurs für Standard-Mandarin von der Schriftpropädeutik bis B1: Kurzzeichen, Pinyin und Töne, mit Einheiten, Prüfungen, Materialien und muttersprachlichem Audio."
+  keywords = "Chinese,Mandarin,Hanzi,Pinyin,HSK,CEFR,OER,Gesamtschule"
+  dateFormat = "2006-01-02"
+  since = 2026
+  colorScheme = "auto"
+  hideCredits = true
+  # The colour-scheme toggle is a labelled control in the navbar
+  # (layouts/_partials/header.html); disable the theme's floating duplicate
+  # so there is exactly one toggle on the page.
+  hideColorSchemeToggle = true
+  customCSS = ["css/custom.css"]
+  # Site code — selects this course's accent (#2334C7 / #7E89E7) from
+  # data/accents.yaml. Never edit the CSS to change the accent.
+  code = "cfl"
+  # Content licence, surfaced by pdf attribution + legal pages.
+  license = "CC BY-SA 4.0"
+
+  # IMPORTANT — every sub-table under [params] MUST come AFTER all bare
+  # [params] keys. TOML scopes everything after a header to that header, so
+  # opening [params.plausible] before the keys above would silently move them
+  # under params.plausible and leave the site unstyled. Keep this block LAST.
+  [params.plausible]
+    # Privacy-friendly, cookieless analytics on the sister sites' self-hosted
+    # instance (server in Germany); disclosed in /datenschutz/.
+    domain = "boulingua.github.io/cfl"
+    src = "https://analytics.hellebo.de/js/script.file-downloads.outbound-links.js"
+
+[[params.social]]
+  name = "GitHub"
+  icon = "fa-brands fa-github fa-2x"
+  weight = 1
+  url = "https://github.com/boulingua/cfl"
+
+# ── Navigation — mirrors content/. Start lives behind the navbar brand. ────
+
+# ── Stufen ────────────────────────────────────────────────────────────────
+[[menu.main]]
+  name = "Stufen"
+  weight = 2
+  identifier = "stufen"
+
+[[menu.main]]
+  parent = "stufen"
+  weight = 21
+  name = "Stufe 0 — Schrift und Töne"
+  url = "/level-0/"
+
+[[menu.main]]
+  parent = "stufen"
+  weight = 22
+  name = "A1 — Anfänger:innen"
+  url = "/level-a1/"
+
+[[menu.main]]
+  parent = "stufen"
+  weight = 23
+  name = "A2 — Grundlegende Kenntnisse"
+  url = "/level-a2/"
+
+[[menu.main]]
+  parent = "stufen"
+  weight = 24
+  name = "B1 — Selbstständige Sprachverwendung"
+  url = "/level-b1/"
+
+# ── Materialien ───────────────────────────────────────────────────────────
+[[menu.main]]
+  name = "Materialien"
+  weight = 3
+  identifier = "materialien"
+
+[[menu.main]]
+  parent = "materialien"
+  weight = 31
+  name = "Foliensätze"
+  url = "/materials/presentations/"
+
+[[menu.main]]
+  parent = "materialien"
+  weight = 32
+  name = "Arbeitsblätter"
+  url = "/materials/worksheets/"
+
+# ── About ─────────────────────────────────────────────────────────────────
+[[menu.main]]
+  name = "About"
+  weight = 4
+  identifier = "about"
+
+[[menu.main]]
+  parent = "about"
+  weight = 41
+  name = "Über diesen Kurs"
+  url = "/about/"
+
+[[menu.main]]
+  parent = "about"
+  weight = 42
+  name = "Erste Schritte"
+  url = "/start/"
+
+[[menu.main]]
+  parent = "about"
+  weight = 43
+  name = "HSK und GER"
+  url = "/appendices/hsk-ger/"
+
+# ── Rechtliches ───────────────────────────────────────────────────────────
+[[menu.main]]
+  name = "Rechtliches"
+  weight = 9
+  identifier = "rechtliches"
+
+[[menu.main]]
+  parent = "rechtliches"
+  weight = 91
+  name = "Impressum"
+  url = "/impressum/"
+
+[[menu.main]]
+  parent = "rechtliches"
+  weight = 92
+  name = "Datenschutzerklärung"
+  url = "/datenschutz/"
+
+[[menu.main]]
+  parent = "rechtliches"
+  weight = 93
+  name = "Haftungsausschluss"
+  url = "/haftungsausschluss/"
+
+[module]
+  [[module.imports]]
+    path = "github.com/luizdepra/hugo-coder"

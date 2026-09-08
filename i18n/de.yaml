@@ -1,0 +1,8 @@
+presentations: { other: "Foliensätze" }
+worksheets: { other: "Arbeitsblätter" }
+presentation: { other: "Foliensatz" }
+worksheet: { other: "Arbeitsblatt" }
+download: { other: "Herunterladen" }
+listen: { other: "Hören" }
+audio_intro: { other: "Muttersprachliches Audio zu dieser Einheit." }
+exam: { other: "Prüfung" }
