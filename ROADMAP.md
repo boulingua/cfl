@@ -1,3 +1,43 @@
+<!-- status-audit-2026-09-09 -->
+> ## Status audit — 2026-09-09
+>
+> **This repository is still a scaffold:** 5 tracked files, no Hugo shell yet, no `content/` pages, no build output committed.
+> The build plan below stands and is not superseded. This box records what the platform
+> now requires that the plan predates, and what the first moves are.
+>
+> **Declared scope (from this plan):** Pre-A1 (script onboarding) → A1 → A2 → B1. Conformance target: core (A1–B1). B2/C1 are out of scope for v1.
+>
+> ### Platform requirements added since this plan was written
+>
+> - **`conformance.yml` at the repo root is mandatory** to declare any conformance level.
+>   The framework (`curriculum` v1.1.0) defines `core` (A1–B1), `full` (A1–C1) and
+>   `complete` (Pre-A1–C2). **No course in the organisation has this file yet** — not even
+>   `efl`, which has the descriptor IDs in place. Absence of the manifest, not absence of
+>   content, is what currently blocks every conformance claim in the suite.
+> - **Descriptor IDs take the form `A1.REC.overall-oral-comprehension.01`.** Every
+>   `implements_id` must resolve against `curriculum/levels/`; `conformance_audit.py
+>   resolve` is the gate.
+> - **Shortcodes, CSS tokens and layout chrome come from the shared `kit` Hugo module.**
+>   A course repo holding its own copies is drift.
+> - **CI is shared** and lives in `boulingua/.github`: `course-build.yml`,
+>   `kit-drift.yml`, `link-check.yml`, `materials-latex.yml`, `org-audit.yml`.
+> - **`[taxonomies]` is declared in no course `hugo.toml` today** — including the three
+>   mature ones. Declare it here from the start rather than inheriting the omission.
+>
+> ### First moves, in this order
+>
+> 1. **Instantiate from `pagegen`.** Copy the template's `hugo.toml`, `go.mod` and CI entry point; do not copy layouts, shortcodes or CSS — those arrive from the shared `kit` module, and a local copy is drift that `kit-drift.yml` will flag.
+> 2. **Write `conformance.yml` before the first unit.** Declare `framework: boulingua-curriculum`, `framework_version: 1.1.0`, the target from the scope above, and `conformance_status: in-progress`. Authoring units before the manifest exists is how `daf`, `efl` and `fle` each ended up with descriptor IDs in front matter that no machine can audit.
+> 3. **Author unit 01 as a complete vertical slice** — page bundle, exam sibling bundle, slide deck, worksheet, audio and descriptor IDs — and only then scale out. One finished unit settles every convention question the remaining units would otherwise re-open.
+>
+> ### Where this sits in the suite
+>
+> Sequencing across all 18 courses, and the reasoning behind the order, live in
+> [`boulingua/.github/ROADMAP.md`](https://github.com/boulingua/.github/blob/main/ROADMAP.md).
+> The reference implementation to copy from is **`efl`** (180 unit bundles + 180 exam
+> bundles, `unitNN-slug` naming, `page_type` and a `curriculum:` block on every unit).
+
+---
 # CFL — Chinese course roadmap
 
 > Repository: `cfl` · Language: Standard Mandarin Chinese · Signature accent `#2334C7` (light) / `#7E89E7` (dark) · Pentagon mark · Status: **coming soon → building**.
