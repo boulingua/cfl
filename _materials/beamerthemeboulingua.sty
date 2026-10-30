@@ -1,0 +1,129 @@
+% beamerthemeboulingua.sty — Beamer theme in the boulingua design language.
+% Compile decks with XeLaTeX or LuaLaTeX (fontspec). Self-contained: bundles
+% the Source Sans 3 / JetBrains Mono fonts and the boulingua logo.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeboulingua}[2026/07/21 boulingua beamer theme]
+
+\RequirePackage{fontspec}
+\RequirePackage{tikz}
+\usetikzlibrary{calc}
+% PDF metadata — attribute the author in the file's core properties.
+% ── Document metadata ───────────────────────────────────────────────────────
+% /Author was the only field any of these carried, and the attribution gate
+% greps /Author alone — so 432 committed PDFs passed while shipping with no
+% title, no subject and no keywords. The gate is being widened; these are the
+% fields it will want. Set the per-document ones with \blgsetmeta.
+\hypersetup{
+  pdfauthor={S. Le Boulanger},
+  pdfcreator={boulingua kit},
+  pdfproducer={boulingua kit}}
+% \blgsetmeta{<course long name>}{<comma-separated keywords>}
+\newcommand{\blgsetmeta}[2]{\hypersetup{pdfsubject={#1},pdfkeywords={#2}}}
+\AtBeginDocument{\hypersetup{pdftitle={\inserttitle}}}
+
+% ── Palette ─────────────────────────────────────────────────────────────────
+% Every colour comes from boulingua-tokens, generated from design/tokens.yaml.
+% This block used to carry 43 \definecolor literals — the same 43 that sat in
+% the sibling .sty file, kept in agreement by hand. They were not in agreement:
+% Persian reached the CSS side and neither of these, so `pfa` had a web accent
+% and no print accent. There is now one source, and gate A7 fails any
+% \definecolor outside the generated package.
+\RequirePackage{boulingua-tokens}
+% \blglangmark[height] draws the language's abstract icon (accent-filled);
+% it is a no-op until \blgsetlang{code} points it at brand/icons/<code>.pdf.
+\newcommand{\blglangmark}[1][12mm]{}
+% \blgsetui{<polyglossia language>} — the INSTRUCTION language.
+%
+% Every page is German instructions around target-language content, and those
+% are two different languages with two different typographic conventions. The
+% design spec had no way to say that on the print side, so a Greek worksheet
+% and its German task rubric were indistinguishable to the renderer.
+%
+% Defaults to german and is a no-op in the four shipped script tiers: it
+% records the distinction now so unit sources carry it, and becomes a real
+% \setmainlanguage when polyglossia lands with bidi at wave 5 (ADR-0008).
+\newcommand{\blguilang}{german}
+\newcommand{\blgsetui}[1]{\renewcommand{\blguilang}{#1}}
+
+\newcommand{\blgsetlang}[1]{\colorlet{blgaccent}{acc-#1}\colorlet{blgaccenthover}{acch-#1}%
+  \renewcommand{\blglangmark}[1][12mm]{\includegraphics[height=##1]{brand/icons/#1.pdf}}}
+
+% ── Fonts ───────────────────────────────────────────────────────────────────
+% Extension is .otf now: these are cut from the upstream Adobe release, not the
+% Google Fonts `latin,latin-ext` repackaging that shipped before. That one
+% carried 781 codepoints with no Greek and no Cyrillic, and declared every
+% weight "Source Sans 3 ExtraLight" in its name table, which is why every
+% committed worksheet embeds /BUEMMA+SourceSans3ExtraLight-Regular.
+%
+% ItalicFont is set for the first time. There was no italic face anywhere in
+% the org, so all 13,576 emphasis spans across the three live courses were
+% synthesised obliques. For Cyrillic that is not merely ugly: а, т and д have
+% different italic constructions, so a synthesised oblique renders the wrong
+% letterforms.
+\setmainfont{SourceSans3}[Path=fonts/, Extension=.otf,
+  UprightFont=*-Regular, ItalicFont=*-It,
+  BoldFont=*-Bold, BoldItalicFont=*-BoldIt]
+% \setsansfont, and this is the fix for a defect the italic work uncovered:
+% \setmainfont sets \rmfamily, but beamer's default document family is
+% \sffamily. Every committed deck in the org — 156 fle + 60 daf — is therefore
+% typeset in Latin Modern Sans, with Source Sans 3 appearing only where
+% \blgsemibold is called explicitly. Verified in the artefacts: they embed
+% LMSans10-Regular and LMSans10-Oblique for body text.
+\setsansfont{SourceSans3}[Path=fonts/, Extension=.otf,
+  UprightFont=*-Regular, ItalicFont=*-It,
+  BoldFont=*-Bold, BoldItalicFont=*-BoldIt]
+\newfontfamily\blgsemibold{SourceSans3-Semibold}[Path=fonts/, Extension=.otf,
+  ItalicFont=SourceSans3-SemiboldIt]
+% Scale=0.884 is not a preference. JetBrains Mono's x-height measures 0.550 em
+% against Source Sans 3's 0.486 — 13% larger — so at the same nominal size code
+% sets visibly bigger than the prose around it. The number is measured in
+% design/fonts.yaml and the SAME value produces the CSS size-adjust, so web and
+% print cannot drift apart.
+\setmonofont{JetBrainsMono-Regular}[Path=fonts/, Extension=.ttf, Scale=0.884]
+\newfontfamily\blgmarker{PermanentMarker-Regular}[Path=fonts/, Extension=.ttf]
+
+% ── Colours & fonts of beamer elements ──────────────────────────────────────
+\setbeamercolor{normal text}{fg=blgfg}
+\setbeamercolor{structure}{fg=blgaccent}
+\setbeamercolor{frametitle}{fg=blgfg}
+\setbeamercolor{title}{fg=blgfg}
+\setbeamercolor{itemize item}{fg=blgaccent}
+\setbeamercolor{itemize subitem}{fg=blgmuted}
+\setbeamercolor{block title}{fg=white,bg=blgaccent}
+\setbeamercolor{block body}{bg=blgsurface}
+\setbeamerfont{frametitle}{family=\blgsemibold,size=\LARGE}
+\setbeamerfont{title}{family=\blgsemibold,size=\huge}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\small\raise0.5pt\hbox{\textbullet}}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+% ── Frame title: accent rule underneath ─────────────────────────────────────
+\setbeamertemplate{frametitle}{%
+  \vskip0.6em\hbox{\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle}%
+  \vskip2pt{\color{blgaccent}\rule{\linewidth}{1.4pt}}\vskip0.2em}
+
+% ── Watermark: icon + © author · title, centred at the foot of every slide ──
+\setbeamertemplate{background}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south,inner sep=0pt] at ($(current page.south)+(0,3.4mm)$)
+      {\raisebox{-1.0mm}{\includegraphics[height=3.8mm]{assets/boulingua-logo.png}}%
+       \hspace{1.5mm}{\blgsemibold\scriptsize\color{blgmuted}%
+         \textcopyright\ S.~Le Boulanger \ \textbullet\ \inserttitle}};
+  \end{tikzpicture}}
+
+% ── Footline: slide number, muted, right ────────────────────────────────────
+\setbeamertemplate{footline}{%
+  \hfill\usebeamercolor[fg]{blgmuted}\color{blgmuted}\scriptsize
+  \insertframenumber\hspace{6mm}\vskip3mm}
+
+% ── Title page ──────────────────────────────────────────────────────────────
+% Author + date are carried by the foot watermark, so the title slide shows
+% only the title, accent rule and subtitle.
+\setbeamertemplate{title page}{%
+  \vfill
+  {\blglangmark[15mm]\par}\vskip12pt
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+  \vskip4pt{\color{blgaccent}\rule{0.42\linewidth}{2pt}}\par
+  \vskip10pt{\color{blgmuted}\large\insertsubtitle\par}
+  \vfill}
+\endinput

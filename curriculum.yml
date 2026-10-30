@@ -1,0 +1,18 @@
+# Target scope only; no descriptor implementation or educational approval is claimed.
+framework: boulingua-curriculum
+framework_version: 1.2.0
+language: zh
+declared_conformance: core
+conformance_status: in-progress
+levels_claimed:
+- A1
+- A2
+- B1
+pages: {}
+implements:
+  distinct_descriptors: 0
+  proposed: 0
+  asserted: 0
+realizations: []
+gaps: []
+out_of_scope: []

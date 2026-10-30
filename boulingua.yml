@@ -1,0 +1,26 @@
+code: cfl
+kind: course
+content_model: leaf-bundle
+slug:
+  section_separator: hyphen
+  leaf_source: dirname
+  leaf_style: hyphen
+  unit_number_in_slug: true
+script_tier: core
+target_language: zh
+chrome_language: de
+band_default: II
+milestone: M0
+gates:
+  network_graph: false
+  pagefind: false
+  bildungsplan: false
+  curriculum: warn
+vgwort:
+  registry: vgwort/marks.yaml
+  url_lock: vgwort/url-lock-provisional.csv
+  hub_exclusions:
+  - /
+  - /materials/
+  expect_empty: false
+materials: committed

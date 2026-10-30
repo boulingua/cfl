@@ -1,0 +1,63 @@
+baseURL = "https://boulingua.github.io/cfl/"
+title = "Chinesisch — Boulingua"
+languageCode = "de"
+defaultContentLanguage = "de"
+enableRobotsTXT = true
+[pagination]
+  pagerSize = 20
+[markup.highlight]
+  noClasses = false
+[markup.goldmark.renderer]
+  unsafe = true
+[taxonomies]
+  tag = "tags"
+  skill = "skills"
+  level = "levels"
+  topic = "topics"
+[params]
+  code = "cfl"
+  navTitle = "Chinesisch"
+  author = "S. Le Boulanger"
+  description = "Chinesisch lernen: Ein Boulingua-Kurs im Aufbau."
+  license = "CC BY-SA 4.0"
+  targetLanguage = "zh"
+  scriptTier = "core"
+  since = 2025
+  hideCredits = true
+  hideColorSchemeToggle = true
+  colorScheme = "auto"
+  customCSS = ["css/tokens.css", "css/custom.css"]
+[params.plausible]
+  domain = ""
+[[menu.main]]
+  name = "Kursstand"
+  url = "/about/"
+  weight = 1
+[[menu.main]]
+  name = "Materialien"
+  url = "/materials/"
+  weight = 2
+[[menu.main]]
+  name = "Rechtliches"
+  identifier = "legal"
+  weight = 9
+[[menu.main]]
+  parent = "legal"
+  name = "Impressum"
+  url = "/impressum/"
+  weight = 91
+[[menu.main]]
+  parent = "legal"
+  name = "Datenschutz"
+  url = "/datenschutz/"
+  weight = 92
+[[menu.main]]
+  parent = "legal"
+  name = "Haftungsausschluss"
+  url = "/haftungsausschluss/"
+  weight = 93
+[module]
+  [[module.imports]]
+    path = "github.com/boulingua/kit"
+  [[module.imports]]
+    path = "github.com/luizdepra/hugo-coder"

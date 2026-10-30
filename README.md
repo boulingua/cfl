@@ -1,52 +1,55 @@
-# cfl — Chinese as a foreign language
+# cfl — Chinesisch
 
-<img src="brand/icon.png" alt="Chinese icon" width="64" align="right">
+A Boulingua course by S. Le Boulanger for school teaching and independent study.
+The interface and task instructions are German; the target language is `zh`.
 
-**Chinese as a Foreign Language** — a course in the making for the
-[boulingua](https://github.com/boulingua) multilingual teaching platform by
-S. Le Boulanger: free, openly-licensed materials for the German *Gesamtschule*
-system and for independent learners.
+**Development site:** the Hugo site and curriculum declaration are implemented.
+No teaching units, examinations or recordings are published in this repository.
+The existing [roadmap](ROADMAP.md) defines the intended teaching sequence.
 
-> **Status — scaffold.** This repository is being set up; curriculum units,
-> downloadable materials and audio will follow. The established sister sites show
-> the shape of a finished course:
-> [DaF](https://boulingua.github.io/daf/) ·
-> [EFL](https://boulingua.github.io/efl/) ·
-> [FLE](https://boulingua.github.io/fle/).
+## Intended learning experience
 
-## About Chinese
+Units follow Activate → Input → Practise → Apply → Reflect, with differentiated
+activities, solutions and teacher notes. Reviewed units will have committed PDF
+slide decks and worksheets, accessible transcripts, and audio where an approved
+voice or documented human recording is available. Shared implementation lives
+in [kit](https://github.com/boulingua/kit); the retired generators are historical.
 
-Standard Mandarin; simplified Chinese characters (Hanzi) with Pinyin romanisation and the four tones.
+The manifest [curriculum.yml](curriculum.yml) declares a target, with
+`conformance_status: in-progress`. It claims no achieved descriptor coverage.
 
-## Planned structure
+Target-script enablement is deferred under organisation ADR-0018. The current German development shell uses the core font tier and contains no target-script teaching content.
 
-Curriculum-aligned units following the boulingua five-step model
-(**Activate → Input → Practise → Apply → Reflect**), each providing:
+## Build and preview
 
-- differentiated exercises with answer keys and teacher notes;
-- downloadable **open-format** materials — editable **.odp** slide decks and
-  printable **PDF** worksheets;
-- **native-voice audio** for vocabulary, dialogues and texts, generated with the
-  shared [audiogen](https://github.com/boulingua/audiogen) workflow;
-- researched context from **openly-licensed / public-domain** sources only,
-  correctly cited, with no copyrighted material reproduced.
+Install Git, Hugo **extended 0.159.2**, and Go **1.26.1**. From this repository:
 
-Levels and tracks are **to be defined** (CEFR A1–C1 and/or grade-based tracks,
-in line with the sister sites).
+```sh
+hugo --minify --gc --panicOnWarning
+hugo server --disableFastRender
+```
+
+Open the local URL printed by Hugo. Module versions are pinned in `go.mod` and
+`go.sum`. The refinement workspace uses a local matching kit override; see
+`docs/refinement-2026-10-30.md` in the organisation repository for its status.
+
+To run course gates with sibling `kit`, `curriculum` and `.github` checkouts,
+install `kit/requirements.txt` into a Python 3.12 virtual environment and use
+Node 22, then run:
+
+```sh
+npm ci --prefix ../kit
+npm exec --prefix ../kit -- playwright install chromium
+python ../kit/bin/kit check . --owner-root curriculum=../curriculum --owner-root .github=../.github
+```
+
+A successful site build is not a teaching release. Native-language review,
+unit authoring, appropriate materials, meaningful assessment and an achieved
+curriculum claim remain separate milestones. See [the refinement record](REFINEMENT.md).
 
 ## Licensing
 
-- **Content:** Creative Commons Attribution — CC BY 4.0 (to be confirmed on first release).
-- **Code:** MIT (see [`LICENSE`](LICENSE)).
-
-## Author
-
-S. Le Boulanger — <https://github.com/boulingua>
-
-## Signature colour & icon
-
-This project's signature accent is **`#2334C7`** (light theme) / **`#7E89E7`** (dark theme), paired with the **pentagon** mark (`brand/icon.svg`). The accent is *flag-safe* — the hue does not appear in the Chinese flag — is distinct from every other boulingua language, and is kept clear of the boulingua hub blue. The whole colour system lives in the [boulingua hub](https://github.com/boulingua/website#per-language-accent-colours).
-
-## Use of LLM tools
-
-Portions of this project were prepared with assistance from large language model tooling for narrowly defined, non-authorial tasks: copyediting, prose smoothing, Markdown/LaTeX formatting, scaffolding of boilerplate files (CI configs, build scripts), code refactoring. The tools used were Chat AI, the LLM service of KISSKI (GWDG), and a self-hosted Mistral Small (24B, Apache-2.0) run locally via Ollama and the ollamar R package — local inference only, with no data sent to third parties for the self-hosted model.
+Code: MIT, see [LICENSE](LICENSE). New course content: CC BY-SA 4.0 under the
+suite's content policy. Third-party material retains its own source and licence
+and must be documented separately. No copyrighted source is made freely
+redistributable merely by inclusion in this repository.

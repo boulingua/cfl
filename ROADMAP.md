@@ -1,3 +1,11 @@
+> **Implementation update — 30 October 2026.** A runnable development site and
+> `curriculum.yml` now exist. The current framework version is 1.2.0. Use the
+> shared `kit` commands and `README.md` for setup; `pagegen`, `slidegen`,
+> `sheetgen` and `audiogen` are archived predecessors. Older status counts,
+> installation commands and `conformance.yml` names below are historical.
+> The language-specific teaching plan remains pending; a building shell does
+> not satisfy its learner-release milestones. See `REFINEMENT.md`.
+
 <!-- status-audit-2026-09-09 -->
 > ## Status audit — 2026-09-09
 >
