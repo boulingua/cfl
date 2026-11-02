@@ -29,6 +29,7 @@ enableRobotsTXT = true
   customCSS = ["css/tokens.css", "css/custom.css"]
 [params.plausible]
   domain = ""
+  src = ""
 [[menu.main]]
   name = "Kursstand"
   url = "/about/"
