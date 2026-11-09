@@ -28,8 +28,8 @@ enableRobotsTXT = true
   colorScheme = "auto"
   customCSS = ["css/tokens.css", "css/custom.css"]
 [params.plausible]
-  domain = ""
-  src = ""
+  domain = "boulingua.github.io/cfl"
+  src = "https://analytics.hellebo.de/js/script.file-downloads.outbound-links.js"
 [[menu.main]]
   name = "Kursstand"
   url = "/about/"
